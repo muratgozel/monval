@@ -2,7 +2,7 @@
   "name": "monval",
   "version": "2.0.0",
   "description": "Precise and simple money utility.",
-  "main": "dist/minified/index.js",
+  "main": "dist/monval.cjs.js",
   "scripts": {
     "test": "for i in tests/*.js; do node \"$i\"; done",
     "build": "USE_POLYFILLS=off rollup --config rollup.config.js && USE_POLYFILLS=on rollup --config rollup.config.js",

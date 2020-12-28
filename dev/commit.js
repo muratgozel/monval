@@ -21,7 +21,7 @@ function gitHasChanges(cb) {
   })
 }
 
-function commitChanges(version, msg, branch='master') {
+function commitChanges(version, msg, branch='main') {
   const commands = [
     'git tag -a "' + version + '" -m "' + msg + '"',
     'git add .',
