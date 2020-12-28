@@ -33,7 +33,7 @@ function commitChanges(version, msg, branch='master') {
     try {
       execSync(commands[i], {stdio: 'inherit', encoding: 'utf8'})
     } catch (e) {
-      return false
+      throw e
     }
   }
 

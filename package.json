@@ -1,6 +1,6 @@
 {
   "name": "monval",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Precise and simple money utility.",
   "main": "dist/minified/index.js",
   "scripts": {
