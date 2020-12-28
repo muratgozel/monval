@@ -1,0 +1,45 @@
+{
+  "name": "monval",
+  "version": "1.0.0",
+  "description": "Precise and simple money utility.",
+  "main": "dist/minified/index.js",
+  "scripts": {
+    "test": "for i in tests/*.js; do node \"$i\"; done",
+    "build": "USE_POLYFILLS=off rollup --config rollup.config.js && USE_POLYFILLS=on rollup --config rollup.config.js",
+    "gen-babel-report": "node dev/generateBabelPolyfillReport.js",
+    "gen-dist-report": "node dev/generateDistributionReport.js",
+    "commit": "node dev/commit.js commit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muratgozel/monval.git"
+  },
+  "keywords": [
+    "money-library",
+    "money-exchange"
+  ],
+  "author": "Murat Gözel <murat@gozel.com.tr>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muratgozel/monval/issues"
+  },
+  "homepage": "https://github.com/muratgozel/monval#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "core-js": "^3.8.1",
+    "rollup": "^2.35.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "semver": "^7.3.4",
+    "yargs": "^15.4.1"
+  },
+  "dependencies": {
+    "basekits": "^1.2.3",
+    "locale-util": "^2.0.4"
+  }
+}
