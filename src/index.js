@@ -96,6 +96,13 @@ Money.prototype.toFloat = function toFloat() {
   return this.value
 }
 
+Money.prototype.toObject = function toObject() {
+  return {
+    float: this.toFloat(),
+    currency: this.currencyCode
+  }
+}
+
 Money.prototype.pretty = function pretty() {
   const currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currencyCode)
     ? String.fromCharCode( parseInt(this.monval.currencySymbolUnicodeMap[this.currencyCode], 16) )
