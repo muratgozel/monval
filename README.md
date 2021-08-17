@@ -80,16 +80,16 @@ This is an auto-generated report that shows the type, name and size of the bundl
 [comment]: # (DISTRIBUTIONS_REPORT_START)
 ```js
 [
-  "monval.amd.js (7.85 KB)",
-  "monval.amd.polyfilled.js (24.62 KB)",
-  "monval.cjs.js (7.84 KB)",
-  "monval.cjs.polyfilled.js (24.61 KB)",
-  "monval.es.js (7.67 KB)",
-  "monval.es.polyfilled.js (24.44 KB)",
-  "monval.iife.js (7.85 KB)",
-  "monval.iife.polyfilled.js (24.62 KB)",
-  "monval.umd.js (8.07 KB)",
-  "monval.umd.polyfilled.js (24.84 KB)"
+  "monval.amd.js (7.94 KB)",
+  "monval.amd.polyfilled.js (24.71 KB)",
+  "monval.cjs.js (7.92 KB)",
+  "monval.cjs.polyfilled.js (24.70 KB)",
+  "monval.es.js (7.76 KB)",
+  "monval.es.polyfilled.js (24.53 KB)",
+  "monval.iife.js (7.94 KB)",
+  "monval.iife.polyfilled.js (24.71 KB)",
+  "monval.umd.js (8.16 KB)",
+  "monval.umd.polyfilled.js (24.93 KB)"
 ]
 ```
 [comment]: # (DISTRIBUTIONS_REPORT_END)
