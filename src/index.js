@@ -88,8 +88,9 @@ Money.prototype.exchangePure = function exchangePure(amount, target) {
     this.monval.exchangeRates[target] / this.monval.exchangeRates[this.currencyCode])
 }
 
-Money.prototype.toFixed = function toFixed() {
-  return this.monval.round(this.value, this.decilen).toString()
+Money.prototype.toFixed = function toFixed(decilen=null) {
+  const dlen = Number.isInteger(decilen) ? decilen : this.decilen
+  return this.monval.round(this.value, dlen).toString()
 }
 
 Money.prototype.toFloat = function toFloat() {
