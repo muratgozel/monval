@@ -6,7 +6,7 @@ const monval = new Monval()
 assert.strictEqual(monval.config.singleCurrency, false)
 
 const money = monval.create(10, 'usd')
-assert.strictEqual(money.toFixed(), '10')
+assert.strictEqual(money.toFixed(), '10.00')
 
 money.add(100.789)
 assert.strictEqual(money.toFixed(), '110.79')
@@ -29,4 +29,4 @@ assert.strictEqual(money.toFloat(), 478.16211132800004)
 assert.strictEqual(money.currencyCode, 'TRY')
 
 money.add(100, 'usd')
-assert.strictEqual(money.toFixed(), '1087.8')
+assert.strictEqual(money.toFixed(), '1087.80')

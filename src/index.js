@@ -10,7 +10,7 @@ function Money(monval, value, currencyCode) {
   this.number = data.num
   this.decilen = typekit.isNumber(this.monval.config.decilen)
     ? this.monval.config.decilen
-    : data.deciLen
+    : parseFloat(data.deciLen)
   this.nativeName = data.name
 }
 
@@ -90,7 +90,17 @@ Money.prototype.exchangePure = function exchangePure(amount, target) {
 
 Money.prototype.toFixed = function toFixed(decilen=null) {
   const dlen = Number.isInteger(decilen) ? decilen : this.decilen
-  return this.monval.round(this.value, dlen).toString()
+  const str = this.monval.round(this.value, dlen).toString()
+  if (dlen > 0) {
+    if (str.indexOf('.') === -1) {
+      return str + '.' + Array.apply(null, Array(dlen)).map(Number.prototype.valueOf, 0).join('')
+    }
+    const outputlen = str.split('.')[1].length
+    if (dlen > outputlen) {
+      return str + Array.apply(null, Array(dlen - outputlen)).map(Number.prototype.valueOf, 0).join('')
+    }
+  }
+  return str
 }
 
 Money.prototype.toFloat = function toFloat() {

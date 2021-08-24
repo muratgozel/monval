@@ -80,16 +80,16 @@ This is an auto-generated report that shows the type, name and size of the bundl
 [comment]: # (DISTRIBUTIONS_REPORT_START)
 ```js
 [
-  "monval.amd.js (8.03 KB)",
-  "monval.amd.polyfilled.js (27.28 KB)",
-  "monval.cjs.js (8.02 KB)",
-  "monval.cjs.polyfilled.js (27.28 KB)",
-  "monval.es.js (7.85 KB)",
-  "monval.es.polyfilled.js (27.11 KB)",
-  "monval.iife.js (8.03 KB)",
-  "monval.iife.polyfilled.js (27.28 KB)",
-  "monval.umd.js (8.26 KB)",
-  "monval.umd.polyfilled.js (27.50 KB)"
+  "monval.amd.js (8.27 KB)",
+  "monval.amd.polyfilled.js (29.72 KB)",
+  "monval.cjs.js (8.26 KB)",
+  "monval.cjs.polyfilled.js (29.73 KB)",
+  "monval.es.js (8.10 KB)",
+  "monval.es.polyfilled.js (29.56 KB)",
+  "monval.iife.js (8.27 KB)",
+  "monval.iife.polyfilled.js (29.72 KB)",
+  "monval.umd.js (8.50 KB)",
+  "monval.umd.polyfilled.js (29.94 KB)"
 ]
 ```
 [comment]: # (DISTRIBUTIONS_REPORT_END)
@@ -105,6 +105,8 @@ This is an auto-generated report that shows the pollyfils added by core-js to th
   "es.object.set-prototype-of",
   "es.array.filter",
   "es.array.index-of",
+  "es.array.join",
+  "es.array.map",
   "es.function.name",
   "es.number.constructor",
   "es.number.is-integer",
@@ -115,7 +117,8 @@ This is an auto-generated report that shows the pollyfils added by core-js to th
   "es.parse-int",
   "es.regexp.exec",
   "es.regexp.to-string",
-  "es.string.replace"
+  "es.string.replace",
+  "es.string.split"
 ]
 // based on the targets:
 {
