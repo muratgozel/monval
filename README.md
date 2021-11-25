@@ -6,7 +6,7 @@ Precise and simple money utility.
 ![npm bundle size](https://img.shields.io/bundlephobia/min/monval)
 ![npm](https://img.shields.io/npm/dy/monval)
 
-Apart from the basic methods like adding, subtracting, multiplying and dividing, **monval** uses **[Gaussian rounding](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even)** when exporting values in a fixed length. Currently, the gaussian method is the only supported rounding method but library flexible enough to provide more rounding methods in future releases.
+**monval** uses **[Gaussian rounding](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even)** when exporting values in a fixed length. Currently, the gaussian method is the only supported rounding method but library flexible enough to provide more rounding methods in future releases.
 
 ## Install
 ```sh
@@ -14,15 +14,19 @@ npm i monval
 ```
 
 ## Import
-There are different types of distributions depending on your use case. Essentially, the package can be imported via require:
+There are exports for **es6**, **cjs** and **umd** environments:
 ```js
+// cjs
 const {Monval} = require('monval')
+
+// or es
+import {Monval} from 'monval'
 ```
-or via script tag:
+or inject via script tag:
 ```html
-<script src="https://unpkg.com/monval@1/dist/monval.iife.js" crossorigin type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/monval@1/dist/browser/iife/index.js" type="text/javascript"></script>
 ```
-but there are lots of other options. See distribution report below.
+You can access it via global `window.monval` when import it via script tag.
 
 ## Usage
 All functionality aims to provide developers a practical and quick money operations.
@@ -68,72 +72,9 @@ pocket.add(100, 'usd')
 assert.strictEqual(pocket.toFixed(), '1087.8')
 ```
 
-## Contributions Are Welcome
-1. Clone the repository
-2. Make changes.
-3. `npm run build && npm run gen-babel-report && gen-dist-report`
-4. `npm run commit -- -l patch -m "Commit message."`
+---
 
-## Distributions Report
-This is an auto-generated report that shows the type, name and size of the bundles available to use individually.
-
-[comment]: # (DISTRIBUTIONS_REPORT_START)
-```js
-[
-  "monval.amd.js (8.27 KB)",
-  "monval.amd.polyfilled.js (29.72 KB)",
-  "monval.cjs.js (8.26 KB)",
-  "monval.cjs.polyfilled.js (29.73 KB)",
-  "monval.es.js (8.10 KB)",
-  "monval.es.polyfilled.js (29.56 KB)",
-  "monval.iife.js (8.27 KB)",
-  "monval.iife.polyfilled.js (29.72 KB)",
-  "monval.umd.js (8.50 KB)",
-  "monval.umd.polyfilled.js (29.94 KB)"
-]
-```
-[comment]: # (DISTRIBUTIONS_REPORT_END)
-
-## Babel Polyfills Report
-This is an auto-generated report that shows the pollyfils added by core-js to the **pollyfilled** distributions based on the targets configuration described below.
-
-[comment]: # (BABEL_POLYFILLS_REPORT_START)
-```js
-// polyfills:
-[
-  "es.object.get-prototype-of",
-  "es.object.set-prototype-of",
-  "es.array.filter",
-  "es.array.index-of",
-  "es.array.join",
-  "es.array.map",
-  "es.function.name",
-  "es.number.constructor",
-  "es.number.is-integer",
-  "es.number.to-fixed",
-  "es.object.assign",
-  "es.object.to-string",
-  "es.parse-float",
-  "es.parse-int",
-  "es.regexp.exec",
-  "es.regexp.to-string",
-  "es.string.replace",
-  "es.string.split"
-]
-// based on the targets:
-{
-  "android": "85",
-  "chrome": "49",
-  "edge": "18",
-  "firefox": "78",
-  "ie": "9",
-  "ios": "9.3",
-  "opera": "70",
-  "safari": "5.1",
-  "samsung": "4"
-}
-```
-[comment]: # (BABEL_POLYFILLS_REPORT_END)
+Version management of this repository done by [releaser](https://github.com/muratgozel/node-releaser) 🚀
 
 ---
 

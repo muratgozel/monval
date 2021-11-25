@@ -1,5 +1,5 @@
 const assert = require('assert')
-const {Monval} = require('../dist/monval.cjs.js')
+const {Monval} = require('../dist/browser/cjs/index')
 const sampleExchangeRates = require('./sampleExchangeRates.json')
 
 const monval = new Monval()
