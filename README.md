@@ -6,6 +6,8 @@ Precise and simple money utility.
 ![npm bundle size](https://img.shields.io/bundlephobia/min/monval)
 ![npm](https://img.shields.io/npm/dy/monval)
 
+Monval makes it easier to play with monetary values in javascript. It's currency aware.
+
 **monval** uses **[Gaussian rounding](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even)** when exporting values in a fixed length. Currently, the gaussian method is the only supported rounding method but it's flexible enough to provide more rounding methods in future releases.
 
 ## Install
