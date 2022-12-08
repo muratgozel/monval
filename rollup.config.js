@@ -1,7 +1,7 @@
 const {nodeResolve} = require('@rollup/plugin-node-resolve')
 const commonjs = require('@rollup/plugin-commonjs')
 const {babel} = require('@rollup/plugin-babel')
-const {terser} = require('rollup-plugin-terser')
+const terser = require('@rollup/plugin-terser')
 const json = require('@rollup/plugin-json')
 
 const babelPlugins=[]
@@ -56,7 +56,6 @@ module.exports = [
         format: 'iife',
         name: 'monval',
         file: 'dist/browser/iife/index.js',
-        sourcemap: true
       }
     ],
     plugins: [
@@ -76,7 +75,7 @@ module.exports = [
         ],
         plugins: babelPlugins
       }),
-      terser()
+      terser({sourceMap: true})
     ]
   }
 ]

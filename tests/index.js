@@ -1,9 +1,6 @@
 const assert = require('assert')
-const {Monval} = require('../dist/browser/cjs/index')
+const {monval} = require('../dist/browser/cjs/index')
 const sampleExchangeRates = require('./sampleExchangeRates.json')
-
-const monval = new Monval()
-assert.strictEqual(monval.config.singleCurrency, false)
 
 const money = monval.create(10, 'usd')
 assert.strictEqual(money.toFixed(), '10.00')
@@ -23,10 +20,10 @@ money.subtract('%20')
 assert.strictEqual(money.toFloat(), 78.43352)
 assert.strictEqual(money.toFixed(), '78.43')
 
-monval.exchangeRates = sampleExchangeRates.rates
+monval.rates = sampleExchangeRates.rates
 money.exchange('try')
 assert.strictEqual(money.toFloat(), 478.16211132800004)
-assert.strictEqual(money.currencyCode, 'TRY')
+assert.strictEqual(money.currency, 'TRY')
 
 money.add(100, 'usd')
 assert.strictEqual(money.toFixed(), '1087.80')

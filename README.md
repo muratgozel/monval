@@ -1,14 +1,10 @@
 # monval
-Precise and simple money utility.
+Precise and simple money utility with exchange rates support.
 
 ![NPM](https://img.shields.io/npm/l/monval)
 [![npm version](https://badge.fury.io/js/monval.svg)](https://badge.fury.io/js/monval)
-![npm bundle size](https://img.shields.io/bundlephobia/min/monval)
-![npm](https://img.shields.io/npm/dy/monval)
 
-Monval makes it easier to play with monetary values in javascript. It's currency aware.
-
-**monval** uses **[Gaussian rounding](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even)** when exporting values in a fixed length. Currently, the gaussian method is the only supported rounding method but it's flexible enough to provide more rounding methods in future releases.
+**monval** uses **[Gaussian rounding](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even)** when exporting values in a fixed length. Currently, the gaussian method is the only supported rounding method but the module flexible enough to provide more rounding methods in future releases.
 
 ## Install
 ```sh
@@ -19,10 +15,10 @@ npm i monval
 There are exports for **es6**, **cjs** and **umd** environments:
 ```js
 // cjs
-const {Monval} = require('monval')
+const {monval} = require('monval')
 
 // or es
-import {Monval} from 'monval'
+import {monval} from 'monval'
 ```
 or inject via script tag:
 ```html
@@ -31,11 +27,8 @@ or inject via script tag:
 You can access it via global `window.monval` when import it via script tag.
 
 ## Usage
-All functionality aims to provide developers a practical and quick money operations.
 ```js
-const monval = new Monval()
-
-// ten dollars in the pocket
+// ten dollars in a pocket
 const pocket = monval.create(10, 'usd')
 
 // 100.789$ income!
@@ -58,8 +51,8 @@ assert.strictEqual(pocket.toFixed(), '78.43')
 ```
 Let's load exchange rates:
 ```js
-const sampleExchangeRates = require('./sampleExchangeRates.json')
-pocket.exchangeRates = sampleExchangeRates.rates
+const sampleExchangeRates = {/* EUR: 0.99, TRY: 1.11 ... */}
+pocket.rates = sampleExchangeRates
 
 // convert our usd to try
 pocket.exchange('try')

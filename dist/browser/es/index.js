@@ -1,272 +1,236 @@
-import currencies from 'locale-util/data/core/currencies.json';
-export { default as currencies } from 'locale-util/data/core/currencies.json';
-import _Object$assign from '@babel/runtime-corejs3/core-js/object/assign';
-import _filterInstanceProperty from '@babel/runtime-corejs3/core-js/instance/filter';
-import _parseFloat from '@babel/runtime-corejs3/core-js/parse-float';
+import _slicedToArray from '@babel/runtime-corejs3/helpers/slicedToArray';
+import _classCallCheck from '@babel/runtime-corejs3/helpers/classCallCheck';
+import _createClass from '@babel/runtime-corejs3/helpers/createClass';
+import _defineProperty from '@babel/runtime-corejs3/helpers/defineProperty';
 import _indexOfInstanceProperty from '@babel/runtime-corejs3/core-js/instance/index-of';
+import _parseFloat from '@babel/runtime-corejs3/core-js/parse-float';
+import _Number$isFinite from '@babel/runtime-corejs3/core-js/number/is-finite';
+import _trimInstanceProperty from '@babel/runtime-corejs3/core-js/instance/trim';
 import _Number$isInteger from '@babel/runtime-corejs3/core-js/number/is-integer';
 import _mapInstanceProperty from '@babel/runtime-corejs3/core-js/instance/map';
 import _parseInt from '@babel/runtime-corejs3/core-js/parse-int';
-import _Number$isFinite from '@babel/runtime-corejs3/core-js/number/is-finite';
 
-var util = {
-  isObject: function isObject(v) {
-    return Object.prototype.toString.call(v) === '[object Object]';
-  },
-  isNumber: function isNumber(v) {
-    return typeof v == 'number' && _Number$isFinite(v) === true;
-  },
-  isString: function isString(v) {
-    return typeof v == 'string';
-  },
-  isNan: function isNan(v) {
-    return typeof v == 'number' && v != +v;
-  },
-  isNull: function isNull(v) {
-    return v === null;
+var Money = /*#__PURE__*/function () {
+  function Money(monval, number, currency) {
+    _classCallCheck(this, Money);
+    _defineProperty(this, "monval", null);
+    _defineProperty(this, "number", null);
+    _defineProperty(this, "currency", null);
+    this.monval = monval;
+    this.number = number;
+    this.currency = currency;
   }
-};
-
-function Money(monval, value, currencyCode) {
-  var _context,
-      _this = this;
-
-  this.monval = monval;
-  this.value = value;
-  this.currencyCode = currencyCode;
-
-  var data = _filterInstanceProperty(_context = this.monval.currencyData).call(_context, function (o) {
-    return o.code == _this.currencyCode;
-  })[0];
-
-  this.number = data.num;
-  this.decilen = util.isNumber(this.monval.config.decilen) ? this.monval.config.decilen : _parseFloat(data.deciLen);
-  this.nativeName = data.name;
-}
-
-Money.prototype.add = function add(numberOrRate) {
-  var currencyCode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  currencyCode = !currencyCode ? this.currencyCode : currencyCode;
-  var isRate = util.isString(numberOrRate) && _indexOfInstanceProperty(numberOrRate).call(numberOrRate, '%') !== -1;
-
-  if (isRate) {
-    var rate = _parseFloat(numberOrRate.replace('%', ''));
-
-    if (util.isNan(rate)) {
-      throw new Error('Invalid rate.');
+  _createClass(Money, [{
+    key: "add",
+    value: function add(numberOrRate) {
+      var currencyCode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      currencyCode = this.monval.isCurrency(currencyCode) ? currencyCode.toUpperCase() : this.currency;
+      var isRate = typeof numberOrRate === 'string' && _indexOfInstanceProperty(numberOrRate).call(numberOrRate, '%') !== -1;
+      if (isRate) {
+        var _context;
+        var rate = _parseFloat(_trimInstanceProperty(_context = numberOrRate.replace('%', '')).call(_context));
+        if (this.monval.isNan(rate)) {
+          var _context2;
+          throw new Error("Couldn't read rate from \"".concat(_trimInstanceProperty(_context2 = numberOrRate.replace('%', '')).call(_context2), "\"."));
+        }
+        this.number = this.number + this.number * rate / 100;
+      } else {
+        var money2 = this.monval.create(numberOrRate, currencyCode);
+        if (money2.currency === this.currency) {
+          this.number += money2.number;
+        } else {
+          money2.exchange(this.currency);
+          this.number += money2.number;
+        }
+      }
+      return this;
     }
-
-    this.value = this.value + this.value * rate / 100;
-  } else {
-    var money2 = this.monval.create(numberOrRate, currencyCode);
-
-    if (money2.currencyCode == this.currencyCode) {
-      this.value += money2.value;
-    } else {
-      money2.exchange(this.currencyCode);
-      this.value += money2.value;
+  }, {
+    key: "subtract",
+    value: function subtract(numberOrRate) {
+      var currencyCode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      currencyCode = this.monval.isCurrency(currencyCode) ? currencyCode.toUpperCase() : this.currency;
+      var isRate = typeof numberOrRate === 'string' && _indexOfInstanceProperty(numberOrRate).call(numberOrRate, '%') !== -1;
+      if (isRate) {
+        var _context3;
+        var rate = _parseFloat(_trimInstanceProperty(_context3 = numberOrRate.replace('%', '')).call(_context3));
+        if (this.monval.isNan(rate)) {
+          var _context4;
+          throw new Error("Couldn't read rate from \"".concat(_trimInstanceProperty(_context4 = numberOrRate.replace('%', '')).call(_context4), "\"."));
+        }
+        this.number = this.number - this.number * rate / 100;
+      } else {
+        var money2 = this.monval.create(numberOrRate, currencyCode);
+        if (money2.currency === this.currency) {
+          this.number -= money2.number;
+        } else {
+          money2.exchange(this.currency);
+          this.number -= money2.number;
+        }
+      }
+      return this;
     }
-  }
-
-  return this;
-};
-
-Money.prototype.subtract = function subtract(numberOrRate) {
-  var currencyCode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  currencyCode = !currencyCode ? this.currencyCode : currencyCode;
-  var isRate = util.isString(numberOrRate) && _indexOfInstanceProperty(numberOrRate).call(numberOrRate, '%') !== -1;
-
-  if (isRate) {
-    var rate = _parseFloat(numberOrRate.replace('%', ''));
-
-    if (util.isNan(rate)) {
-      throw new Error('Invalid rate.');
+  }, {
+    key: "exchange",
+    value: function exchange(target) {
+      target = target.toUpperCase();
+      if (!this.monval.isCurrency(target)) {
+        throw new Error("Invalid currency.");
+      }
+      if (!this.monval.isObject(this.monval.rates)) {
+        throw new Error("Exchange rates not found. Load the rates first by monval.rates = {}");
+      }
+      if (!this.monval.rates.hasOwnProperty(target)) {
+        throw new Error("The currency you specified not found in the rates.");
+      }
+      this.number = this.number * (this.monval.rates[target] / this.monval.rates[this.currency]);
+      this.currency = target;
+      return this;
     }
-
-    this.value = this.value - this.value * rate / 100;
-  } else {
-    var money2 = this.monval.create(numberOrRate, currencyCode);
-
-    if (money2.currencyCode == this.currencyCode) {
-      this.value -= money2.value;
-    } else {
-      money2.exchange(this.currencyCode);
-      this.value -= money2.value;
+  }, {
+    key: "toFixed",
+    value: function toFixed() {
+      var decilen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var dlen = _Number$isInteger(decilen) ? decilen : this.monval.decilen;
+      var str = this.monval.round(this.number, dlen).toString();
+      if (dlen > 0) {
+        if (_indexOfInstanceProperty(str).call(str, '.') === -1) {
+          var _context5;
+          return str + '.' + _mapInstanceProperty(_context5 = Array.apply(null, Array(dlen))).call(_context5, Number.prototype.valueOf, 0).join('');
+        }
+        var outputlen = str.split('.')[1].length;
+        if (dlen > outputlen) {
+          var _context6;
+          return str + _mapInstanceProperty(_context6 = Array.apply(null, Array(dlen - outputlen))).call(_context6, Number.prototype.valueOf, 0).join('');
+        }
+      }
+      return str;
     }
-  }
-
-  return this;
-};
-
-Money.prototype.exchange = function exchange(target) {
-  target = target.toUpperCase();
-  this.value = this.exchangePure(this.value, target);
-  this.currencyCode = target;
-  return this;
-};
-
-Money.prototype.exchangePure = function exchangePure(amount, target) {
-  if (!util.isObject(this.monval.exchangeRates)) {
-    throw new Error('No exchange rate data found.');
-  }
-
-  if (!this.monval.exchangeRates.hasOwnProperty(target)) {
-    throw new Error('No exchange rate found for "' + target + '"');
-  }
-
-  if (!this.monval.exchangeRates.hasOwnProperty(this.currencyCode)) {
-    throw new Error('No exchange rate found for "' + this.currencyCode + '"');
-  }
-
-  return amount * (this.monval.exchangeRates[target] / this.monval.exchangeRates[this.currencyCode]);
-};
-
-Money.prototype.toFixed = function toFixed() {
-  var decilen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var dlen = _Number$isInteger(decilen) ? decilen : this.decilen;
-  var str = this.monval.round(this.value, dlen).toString();
-
-  if (dlen > 0) {
-    if (_indexOfInstanceProperty(str).call(str, '.') === -1) {
-      var _context2;
-
-      return str + '.' + _mapInstanceProperty(_context2 = Array.apply(null, Array(dlen))).call(_context2, Number.prototype.valueOf, 0).join('');
+  }, {
+    key: "toFloat",
+    value: function toFloat() {
+      return this.number;
     }
-
-    var outputlen = str.split('.')[1].length;
-
-    if (dlen > outputlen) {
-      var _context3;
-
-      return str + _mapInstanceProperty(_context3 = Array.apply(null, Array(dlen - outputlen))).call(_context3, Number.prototype.valueOf, 0).join('');
+  }, {
+    key: "toObject",
+    value: function toObject() {
+      return {
+        float: this.toFloat(),
+        currency: this.currency
+      };
     }
-  }
+  }, {
+    key: "pretty",
+    value: function pretty() {
+      var currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currency) ? String.fromCharCode(_parseInt(this.monval.currencySymbolUnicodeMap[this.currency], 16)) : this.currency;
+      return currency + ' ' + this.toFixed();
+    }
+  }, {
+    key: "pad",
+    value: function pad(len) {
+      var char = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '0';
+      var value = this.toFixed();
+      while (value.length < len) {
+        value = char + value;
+      }
+      return value;
+    }
+  }]);
+  return Money;
+}();
 
-  return str;
-};
-
-Money.prototype.toFloat = function toFloat() {
-  return this.value;
-};
-
-Money.prototype.toObject = function toObject() {
-  return {
-    float: this.toFloat(),
-    currency: this.currencyCode
-  };
-};
-
-Money.prototype.pretty = function pretty() {
-  var currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currencyCode) ? String.fromCharCode(_parseInt(this.monval.currencySymbolUnicodeMap[this.currencyCode], 16)) : this.currencyCode;
-  return currency + ' ' + this.toFixed();
-};
-
-Money.prototype.pad = function pad(len) {
-  var char = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '0';
-  var value = this.toFixed();
-
-  while (value.length < len) {
-    value = char + value;
-  }
-
-  return value;
-};
-
-function Monval() {
-  var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  this.exchangeRates = null;
-  this.readConfig(config);
-}
-
-Monval.prototype.currencySymbolUnicodeMap = {
-  TRY: '20BA',
-  USD: '0024',
-  EUR: '20ac',
-  GBP: '00A3',
-  JPY: '00A5',
-  AMD: '058F',
-  AFN: '060B',
-  THB: '0E3F',
-  SVC: '20A1',
-  CRC: '20A1',
-  INR: '20B9',
-  BTC: '20BF'
-};
-Monval.prototype.currencyData = currencies;
-
-Monval.prototype.updateExchangeRates = function updateExchangeRates(obj) {
-  this.exchangeRates = obj;
-};
-
-Monval.prototype.readConfig = function readConfig(config) {
-  var _this = this;
-
-  var defaultConfig = {
-    singleCurrency: false,
-    decilen: null
-  };
-  this.config = util.isObject(config) ? _Object$assign({}, defaultConfig, config) : defaultConfig;
-
-  if (this.config.singleCurrency !== false) {
-    var _context;
-
-    this.config.singleCurrency = this.config.singleCurrency.toUpperCase();
-
-    var matches = _filterInstanceProperty(_context = this.currencyData).call(_context, function (o) {
-      return o.code == _this.config.singleCurrency;
+var currencies = ["AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTC", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNH", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GGP", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "STN", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VES", "VND", "VUV", "WST", "XAF", "XAG", "XAU", "XCD", "XDR", "XOF", "XPD", "XPF", "XPT", "YER", "ZAR", "ZMW", "ZWL"];
+var Monval = /*#__PURE__*/function () {
+  function Monval() {
+    _classCallCheck(this, Monval);
+    _defineProperty(this, "rates", {});
+    _defineProperty(this, "currency", 'XXX');
+    _defineProperty(this, "currencies", currencies);
+    _defineProperty(this, "currencySymbolUnicodeMap", {
+      TRY: '20BA',
+      USD: '0024',
+      EUR: '20ac',
+      GBP: '00A3',
+      JPY: '00A5',
+      AMD: '058F',
+      AFN: '060B',
+      THB: '0E3F',
+      SVC: '20A1',
+      CRC: '20A1',
+      INR: '20B9',
+      BTC: '20BF'
     });
-
-    if (!matches) {
-      throw new Error('Invalid singleCurrency. Please provide a valid 3-letter currency code.');
+    _defineProperty(this, "decilen", 2);
+  }
+  _createClass(Monval, [{
+    key: "create",
+    value: function create(input) {
+      var code = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var number = 0;
+      var currency = typeof code === 'string' && this.isCurrency(code) ? code.toUpperCase() : this.currency;
+      if (this.isNumber(input)) {
+        number = input;
+      }
+      if (typeof input === 'string' && _indexOfInstanceProperty(input).call(input, ' ') === -1) {
+        number = _parseFloat(input);
+      }
+      if (typeof input === 'string' && _indexOfInstanceProperty(input).call(input, ' ') !== -1) {
+        var _input$split = input.split(' '),
+          _input$split2 = _slicedToArray(_input$split, 2),
+          part1 = _input$split2[0],
+          part2 = _input$split2[1];
+        if (this.isCurrency(part1)) {
+          number = _parseFloat(part2);
+          currency = part1.toUpperCase();
+        } else if (this.isCurrency(part2)) {
+          number = _parseFloat(part1);
+          currency = part2.toUpperCase();
+        } else ;
+      }
+      if (this.isNan(number) || !this.isNumber(number)) {
+        throw new Error("Couldn't recognize the input. " + "Valid kind of inputs are .create(\"USD 1.23\"), .create(\"1.23\", \"EUR\"), .create(\"1.23\")");
+      }
+      return new Money(this, number, currency);
     }
-  }
-
-  if (!util.isNull(this.config.decilen)) {
-    if (!util.isNumber(this.config.decilen)) {
-      throw new Error('Invalid decilen. Please provide a number.');
+  }, {
+    key: "round",
+    value: function round(n, d) {
+      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'GAUSSIAN';
+      switch (algorithm) {
+        case 'GAUSSIAN':
+          var x = n * Math.pow(10, d);
+          var r = Math.round(x);
+          var br = Math.abs(x) % 1 === 0.5 ? r % 2 === 0 ? r : r - 1 : r;
+          return br / Math.pow(10, d);
+        default:
+          throw new Error('Unsupported rounding algorithm.');
+      }
     }
-  }
-};
-
-Monval.prototype.create = function create(value) {
-  var currencyCode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  if (util.isString(value)) value = _parseFloat(value);
-
-  if (util.isNan(value) || !util.isNumber(value)) {
-    throw new Error('The value should be a number or float parsable string.');
-  }
-
-  if (this.config.singleCurrency !== false) {
-    currencyCode = this.config.singleCurrency;
-  } else {
-    var _context2;
-
-    var matches = _filterInstanceProperty(_context2 = this.currencyData).call(_context2, function (o) {
-      return o.code == currencyCode;
-    });
-
-    if (!matches) {
-      throw new Error('Invalid currencyCode. Please provide a valid 3-letter currency code.');
+  }, {
+    key: "isCurrency",
+    value: function isCurrency(v) {
+      var _context;
+      return typeof v === 'string' && _indexOfInstanceProperty(_context = this.currencies).call(_context, v.toUpperCase()) !== -1;
     }
-  }
+  }, {
+    key: "isNumber",
+    value: function isNumber(v) {
+      return typeof v == 'number' && _Number$isFinite(v) === true;
+    }
+  }, {
+    key: "isNan",
+    value: function isNan(v) {
+      return typeof v == 'number' && v != +v;
+    }
+  }, {
+    key: "isObject",
+    value: function isObject(v) {
+      return Object.prototype.toString.call(v) === '[object Object]';
+    }
+  }]);
+  return Monval;
+}();
+var monval = new Monval();
 
-  return new Money(this, value, currencyCode.toUpperCase());
-};
-
-Monval.prototype.round = function round(n, d) {
-  var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'GAUSSIAN';
-
-  switch (algorithm) {
-    case 'GAUSSIAN':
-      var x = n * Math.pow(10, d);
-      var r = Math.round(x);
-      var br = Math.abs(x) % 1 === 0.5 ? r % 2 === 0 ? r : r - 1 : r;
-      return br / Math.pow(10, d);
-
-    default:
-      throw new Error('Unsupported rounding algorithm.');
-  }
-};
-
-export { Monval };
+export { currencies, monval };
 //# sourceMappingURL=index.js.map

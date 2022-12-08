@@ -1,79 +1,93 @@
-import currencies from 'locale-util/data/core/currencies.json'
-import Money from './Money'
-import util from './util'
+import {Money} from './Money.js'
 
-function Monval(config=null) {
-  this.exchangeRates = null
-  this.readConfig(config)
-}
+export const currencies = [
+  "AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND",
+  "BOB","BRL","BSD","BTC","BTN","BWP","BYN","BZD","CAD","CDF","CHF","CLF","CLP","CNH","CNY","COP","CRC","CUC",
+  "CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GEL","GGP","GHS","GIP",
+  "GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","IMP","INR","IQD","IRR","ISK","JEP","JMD",
+  "JOD","JPY","KES","KGS","KHR","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD",
+  "MDL","MGA","MKD","MMK","MNT","MOP","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR",
+  "NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD","SCR","SDG",
+  "SEK","SGD","SHP","SLL","SOS","SRD","SSP","STD","STN","SVC","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY",
+  "TTD","TWD","TZS","UAH","UGX","USD","UYU","UZS","VEF","VES","VND","VUV","WST","XAF","XAG","XAU","XCD","XDR",
+  "XOF","XPD","XPF","XPT","YER","ZAR","ZMW","ZWL"
+]
 
-Monval.prototype.currencySymbolUnicodeMap = {
-  TRY: '20BA', USD: '0024', EUR: '20ac', GBP: '00A3',
-  JPY: '00A5', AMD: '058F', AFN: '060B', THB: '0E3F',
-  SVC: '20A1', CRC: '20A1', INR: '20B9', BTC: '20BF'
-}
-
-Monval.prototype.currencyData = currencies
-
-Monval.prototype.updateExchangeRates = function updateExchangeRates(obj) {
-  this.exchangeRates = obj
-}
-
-Monval.prototype.readConfig = function readConfig(config) {
-  const defaultConfig = {
-    singleCurrency: false,
-    decilen: null
+class Monval {
+  rates={}
+  currency='XXX'
+  currencies=currencies
+  currencySymbolUnicodeMap={
+    TRY: '20BA', USD: '0024', EUR: '20ac', GBP: '00A3',
+    JPY: '00A5', AMD: '058F', AFN: '060B', THB: '0E3F',
+    SVC: '20A1', CRC: '20A1', INR: '20B9', BTC: '20BF'
   }
-  this.config = util.isObject(config)
-    ? Object.assign({}, defaultConfig, config)
-    : defaultConfig
+  decilen=2
 
-  if (this.config.singleCurrency !== false) {
-    this.config.singleCurrency = this.config.singleCurrency.toUpperCase()
-    const matches = this.currencyData.filter(o => o.code == this.config.singleCurrency)
-    if (!matches) {
-      throw new Error('Invalid singleCurrency. Please provide a valid 3-letter currency code.')
+  constructor() {
+  }
+
+  create(input, code=null) {
+    let number = 0
+    let currency = typeof code === 'string' && this.isCurrency(code) ? code.toUpperCase() : this.currency
+
+    if (this.isNumber(input)) {
+      number = input
+    }
+
+    if (typeof input === 'string' && input.indexOf(' ') === -1) {
+      number = parseFloat(input)
+    }
+
+    if (typeof input === 'string' && input.indexOf(' ') !== -1) {
+      const [part1, part2] = input.split(' ')
+
+      if (this.isCurrency(part1)) {
+        number = parseFloat(part2)
+        currency = part1.toUpperCase()
+      }
+      else if (this.isCurrency(part2)) {
+        number = parseFloat(part1)
+        currency = part2.toUpperCase()
+      }
+      else {}
+    }
+
+    if (this.isNan(number) || !this.isNumber(number)) {
+      throw new Error(`Couldn't recognize the input. ` +
+        `Valid kind of inputs are .create("USD 1.23"), .create("1.23", "EUR"), .create("1.23")`)
+    }
+
+    return new Money(this, number, currency)
+  }
+
+  round(n, d, algorithm='GAUSSIAN') {
+    switch (algorithm) {
+      case 'GAUSSIAN':
+        const x = n * Math.pow(10, d)
+        const r = Math.round(x)
+        const br = Math.abs(x) % 1 === 0.5 ? (r % 2 === 0 ? r : r-1) : r
+        return br / Math.pow(10, d)
+      default:
+        throw new Error('Unsupported rounding algorithm.')
     }
   }
 
-  if (!util.isNull(this.config.decilen)) {
-    if (!util.isNumber(this.config.decilen)) {
-      throw new Error('Invalid decilen. Please provide a number.')
-    }
+  isCurrency(v) {
+    return typeof v === 'string' && this.currencies.indexOf(v.toUpperCase()) !== -1
+  }
+
+  isNumber(v) {
+    return typeof v == 'number' && Number.isFinite(v) === true
+  }
+
+  isNan(v) {
+    return typeof v == 'number' && v != +v
+  }
+
+  isObject(v) {
+    return Object.prototype.toString.call(v) === '[object Object]'
   }
 }
 
-Monval.prototype.create = function create(value, currencyCode=null) {
-  if (util.isString(value)) value = parseFloat(value)
-
-  if (util.isNan(value) || !util.isNumber(value)) {
-    throw new Error('The value should be a number or float parsable string.')
-  }
-
-  if (this.config.singleCurrency !== false) {
-    currencyCode = this.config.singleCurrency
-  }
-  else {
-    const matches = this.currencyData.filter(o => o.code == currencyCode)
-    if (!matches) {
-      throw new Error('Invalid currencyCode. Please provide a valid 3-letter currency code.')
-    }
-  }
-
-  return new Money(this, value, currencyCode.toUpperCase())
-}
-
-Monval.prototype.round = function round(n, d, algorithm='GAUSSIAN') {
-  switch (algorithm) {
-    case 'GAUSSIAN':
-      const x = n * Math.pow(10, d)
-      const r = Math.round(x)
-      const br = Math.abs(x) % 1 === 0.5 ? (r % 2 === 0 ? r : r-1) : r
-      return br / Math.pow(10, d)
-      break;
-    default:
-      throw new Error('Unsupported rounding algorithm.')
-  }
-}
-
-export default Monval
+export const monval = new Monval()

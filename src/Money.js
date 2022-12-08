@@ -1,129 +1,128 @@
-import util from './util'
+export class Money {
+  monval=null
+  number=null
+  currency=null
 
-function Money(monval, value, currencyCode) {
-  this.monval = monval
-  this.value = value
-  this.currencyCode = currencyCode
-
-  const data = this.monval.currencyData.filter(o => o.code == this.currencyCode)[0]
-  this.number = data.num
-  this.decilen = util.isNumber(this.monval.config.decilen)
-    ? this.monval.config.decilen
-    : parseFloat(data.deciLen)
-  this.nativeName = data.name
-}
-
-Money.prototype.add = function add(numberOrRate, currencyCode=null) {
-  currencyCode = !currencyCode ? this.currencyCode : currencyCode
-
-  const isRate = util.isString(numberOrRate) && numberOrRate.indexOf('%') !== -1
-  if (isRate) {
-    const rate = parseFloat(numberOrRate.replace('%', ''))
-    if (util.isNan(rate)) {
-      throw new Error('Invalid rate.')
-    }
-    this.value = this.value + (this.value * rate / 100)
+  constructor(monval, number, currency) {
+    this.monval = monval
+    this.number = number
+    this.currency = currency
   }
-  else {
-    const money2 = this.monval.create(numberOrRate, currencyCode)
-    if (money2.currencyCode == this.currencyCode) {
-      this.value += money2.value
+
+  add(numberOrRate, currencyCode=null) {
+    currencyCode = this.monval.isCurrency(currencyCode) ? currencyCode.toUpperCase() : this.currency
+    const isRate = typeof numberOrRate === 'string' && numberOrRate.indexOf('%') !== -1
+
+    if (isRate) {
+      const rate = parseFloat(numberOrRate.replace('%', '').trim())
+
+      if (this.monval.isNan(rate)) {
+        throw new Error(`Couldn't read rate from "${numberOrRate.replace('%', '').trim()}".`)
+      }
+
+      this.number = this.number + (this.number * rate / 100)
     }
     else {
-      money2.exchange(this.currencyCode)
-      this.value += money2.value
+      const money2 = this.monval.create(numberOrRate, currencyCode)
+      if (money2.currency === this.currency) {
+        this.number += money2.number
+      }
+      else {
+        money2.exchange(this.currency)
+        this.number += money2.number
+      }
     }
+
+    return this
   }
 
-  return this
-}
+  subtract(numberOrRate, currencyCode=null) {
+    currencyCode = this.monval.isCurrency(currencyCode) ? currencyCode.toUpperCase() : this.currency
+    const isRate = typeof numberOrRate === 'string' && numberOrRate.indexOf('%') !== -1
 
-Money.prototype.subtract = function subtract(numberOrRate, currencyCode=null) {
-  currencyCode = !currencyCode ? this.currencyCode : currencyCode
+    if (isRate) {
+      const rate = parseFloat(numberOrRate.replace('%', '').trim())
 
-  const isRate = util.isString(numberOrRate) && numberOrRate.indexOf('%') !== -1
-  if (isRate) {
-    const rate = parseFloat(numberOrRate.replace('%', ''))
-    if (util.isNan(rate)) {
-      throw new Error('Invalid rate.')
-    }
-    this.value = this.value - (this.value * rate / 100)
-  }
-  else {
-    const money2 = this.monval.create(numberOrRate, currencyCode)
-    if (money2.currencyCode == this.currencyCode) {
-      this.value -= money2.value
+      if (this.monval.isNan(rate)) {
+        throw new Error(`Couldn't read rate from "${numberOrRate.replace('%', '').trim()}".`)
+      }
+
+      this.number = this.number - (this.number * rate / 100)
     }
     else {
-      money2.exchange(this.currencyCode)
-      this.value -= money2.value
+      const money2 = this.monval.create(numberOrRate, currencyCode)
+      if (money2.currency === this.currency) {
+        this.number -= money2.number
+      }
+      else {
+        money2.exchange(this.currency)
+        this.number -= money2.number
+      }
+    }
+
+    return this
+  }
+
+  exchange(target) {
+    target = target.toUpperCase()
+
+    if (!this.monval.isCurrency(target)) {
+      throw new Error(`Invalid currency.`)
+    }
+
+    if (!this.monval.isObject(this.monval.rates)) {
+      throw new Error(`Exchange rates not found. Load the rates first by monval.rates = {}`)
+    }
+
+    if (!this.monval.rates.hasOwnProperty(target)) {
+      throw new Error(`The currency you specified not found in the rates.`)
+    }
+
+    this.number = this.number * (this.monval.rates[target] / this.monval.rates[this.currency])
+    this.currency = target
+
+    return this
+  }
+
+  toFixed(decilen=null) {
+    const dlen = Number.isInteger(decilen) ? decilen : this.monval.decilen
+    const str = this.monval.round(this.number, dlen).toString()
+
+    if (dlen > 0) {
+      if (str.indexOf('.') === -1) {
+        return str + '.' + Array.apply(null, Array(dlen)).map(Number.prototype.valueOf, 0).join('')
+      }
+
+      const outputlen = str.split('.')[1].length
+      if (dlen > outputlen) {
+        return str + Array.apply(null, Array(dlen - outputlen)).map(Number.prototype.valueOf, 0).join('')
+      }
+    }
+
+    return str
+  }
+
+  toFloat() {
+    return this.number
+  }
+
+  toObject() {
+    return {
+      float: this.toFloat(),
+      currency: this.currency
     }
   }
 
-  return this
-}
-
-Money.prototype.exchange = function exchange(target) {
-  target = target.toUpperCase()
-
-  this.value = this.exchangePure(this.value, target)
-  this.currencyCode = target
-
-  return this
-}
-
-Money.prototype.exchangePure = function exchangePure(amount, target) {
-  if (!util.isObject(this.monval.exchangeRates)) {
-    throw new Error('No exchange rate data found.')
-  }
-  if (!this.monval.exchangeRates.hasOwnProperty(target)) {
-    throw new Error('No exchange rate found for "' + target + '"')
-  }
-  if (!this.monval.exchangeRates.hasOwnProperty(this.currencyCode)) {
-    throw new Error('No exchange rate found for "' + this.currencyCode + '"')
+  pretty() {
+    const currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currency)
+      ? String.fromCharCode( parseInt(this.monval.currencySymbolUnicodeMap[this.currency], 16) )
+      : this.currency
+    return currency + ' ' + this.toFixed()
   }
 
-  return amount * (
-    this.monval.exchangeRates[target] / this.monval.exchangeRates[this.currencyCode])
-}
-
-Money.prototype.toFixed = function toFixed(decilen=null) {
-  const dlen = Number.isInteger(decilen) ? decilen : this.decilen
-  const str = this.monval.round(this.value, dlen).toString()
-  if (dlen > 0) {
-    if (str.indexOf('.') === -1) {
-      return str + '.' + Array.apply(null, Array(dlen)).map(Number.prototype.valueOf, 0).join('')
-    }
-    const outputlen = str.split('.')[1].length
-    if (dlen > outputlen) {
-      return str + Array.apply(null, Array(dlen - outputlen)).map(Number.prototype.valueOf, 0).join('')
-    }
-  }
-  return str
-}
-
-Money.prototype.toFloat = function toFloat() {
-  return this.value
-}
-
-Money.prototype.toObject = function toObject() {
-  return {
-    float: this.toFloat(),
-    currency: this.currencyCode
+  pad(len, char='0') {
+    let value = this.toFixed()
+    while (value.length < len) value = char + value
+    return value
   }
 }
-
-Money.prototype.pretty = function pretty() {
-  const currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currencyCode)
-    ? String.fromCharCode( parseInt(this.monval.currencySymbolUnicodeMap[this.currencyCode], 16) )
-    : this.currencyCode
-  return currency + ' ' + this.toFixed()
-}
-
-Money.prototype.pad = function pad(len, char='0') {
-  let value = this.toFixed()
-  while (value.length < len) value = char + value
-  return value
-}
-
-export default Money
