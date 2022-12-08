@@ -1,6 +1,6 @@
 {
   "name": "monval",
-  "version": "v2.0.3",
+  "version": "v2.0.4",
   "description": "Precise and simple money utility with exchange rates support.",
   "exports": {
     ".": {
@@ -17,7 +17,7 @@
   "scripts": {
     "test": "for i in tests/*.js; do node \"$i\"; done",
     "build": "rollup --config rollup.config.js",
-    "postinstall": "npm run build"
+    "postinstall": "npm install && npm run build"
   },
   "repository": {
     "type": "git",
