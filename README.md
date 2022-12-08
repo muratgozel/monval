@@ -22,7 +22,7 @@ import {monval} from 'monval'
 ```
 or inject via script tag:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/monval@1/dist/browser/iife/index.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/monval@2/dist/browser/iife/index.js" type="text/javascript"></script>
 ```
 You can access it via global `window.monval` when import it via script tag.
 

@@ -1,6 +1,6 @@
 {
   "name": "monval",
-  "version": "v2.0.0",
+  "version": "v2.0.1",
   "description": "Precise and simple money utility with exchange rates support.",
   "exports": {
     ".": {
@@ -23,8 +23,10 @@
     "url": "git+https://github.com/muratgozel/monval.git"
   },
   "keywords": [
+    "money",
     "money-library",
-    "money-exchange"
+    "money-exchange",
+    "currency-converter"
   ],
   "author": "Murat Gözel <murat@gozel.com.tr>",
   "funding": {
