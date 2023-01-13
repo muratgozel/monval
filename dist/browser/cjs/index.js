@@ -6,11 +6,11 @@ var _createClass = require('@babel/runtime-corejs3/helpers/createClass');
 var _defineProperty = require('@babel/runtime-corejs3/helpers/defineProperty');
 var _indexOfInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/index-of');
 var _parseFloat = require('@babel/runtime-corejs3/core-js/parse-float');
+var _parseInt = require('@babel/runtime-corejs3/core-js/parse-int');
 var _Number$isFinite = require('@babel/runtime-corejs3/core-js/number/is-finite');
 var _trimInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/trim');
 var _Number$isInteger = require('@babel/runtime-corejs3/core-js/number/is-integer');
 var _mapInstanceProperty = require('@babel/runtime-corejs3/core-js/instance/map');
-var _parseInt = require('@babel/runtime-corejs3/core-js/parse-int');
 
 var Money = /*#__PURE__*/function () {
   function Money(monval, number, currency) {
@@ -124,17 +124,14 @@ var Money = /*#__PURE__*/function () {
   }, {
     key: "pretty",
     value: function pretty() {
-      var currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currency) ? String.fromCharCode(_parseInt(this.monval.currencySymbolUnicodeMap[this.currency], 16)) : this.currency;
-      return currency + ' ' + this.toFixed();
+      return this.monval.getCurrencySymbol(this.currency) + ' ' + this.toFixed();
     }
   }, {
     key: "pad",
     value: function pad(len) {
       var char = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '0';
       var value = this.toFixed();
-      while (value.length < len) {
-        value = char + value;
-      }
+      while (value.length < len) value = char + value;
       return value;
     }
   }]);
@@ -193,6 +190,11 @@ var Monval = /*#__PURE__*/function () {
         throw new Error("Couldn't recognize the input. " + "Valid kind of inputs are .create(\"USD 1.23\"), .create(\"1.23\", \"EUR\"), .create(\"1.23\")");
       }
       return new Money(this, number, currency);
+    }
+  }, {
+    key: "getCurrencySymbol",
+    value: function getCurrencySymbol(currency) {
+      return this.currencySymbolUnicodeMap.hasOwnProperty(currency) ? String.fromCharCode(_parseInt(this.currencySymbolUnicodeMap[currency], 16)) : currency;
     }
   }, {
     key: "round",

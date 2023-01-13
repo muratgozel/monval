@@ -114,10 +114,7 @@ export class Money {
   }
 
   pretty() {
-    const currency = this.monval.currencySymbolUnicodeMap.hasOwnProperty(this.currency)
-      ? String.fromCharCode( parseInt(this.monval.currencySymbolUnicodeMap[this.currency], 16) )
-      : this.currency
-    return currency + ' ' + this.toFixed()
+    return this.monval.getCurrencySymbol(this.currency) + ' ' + this.toFixed()
   }
 
   pad(len, char='0') {

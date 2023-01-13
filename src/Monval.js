@@ -61,6 +61,12 @@ class Monval {
     return new Money(this, number, currency)
   }
 
+  getCurrencySymbol(currency) {
+    return this.currencySymbolUnicodeMap.hasOwnProperty(currency)
+      ? String.fromCharCode( parseInt(this.currencySymbolUnicodeMap[currency], 16) )
+      : currency
+  }
+
   round(n, d, algorithm='GAUSSIAN') {
     switch (algorithm) {
       case 'GAUSSIAN':

@@ -1,6 +1,6 @@
 {
   "name": "monval",
-  "version": "v2.0.6",
+  "version": "v2.1.0",
   "description": "Precise and simple money utility with exchange rates support.",
   "exports": {
     ".": {
