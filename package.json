@@ -1,7 +1,10 @@
 {
   "name": "monval",
-  "version": "v2.1.0",
+  "version": "v2.2.0",
   "description": "Precise and simple money utility with exchange rates support.",
+  "imports": {
+    "@/*": "build/*"
+  },
   "exports": {
     ".": {
       "import": "./dist/browser/es/index.js",
@@ -14,9 +17,14 @@
   },
   "main": "./dist/browser/cjs/index.js",
   "module": "./dist/browser/es/index.js",
+  "types": "./types/index.d.ts",
+  "type": "module",
   "scripts": {
-    "test": "for i in tests/*.js; do node \"$i\"; done",
-    "build": "rollup --config rollup.config.js"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "precompile": "rm -rf build/*",
+    "compile": "tsc -p tsconfig.json",
+    "compile:test": "npm run compile && npm run test",
+    "build": "npm run compile && rollup --config rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -43,14 +51,23 @@
     "@babel/core": "^7.15.5",
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.6",
+    "@jest/globals": "^29.4.3",
+    "@rollup/plugin-alias": "^4.0.3",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^23.0.3",
-    "@rollup/plugin-json": "^5.0.2",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.2.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@tsconfig/node18-strictest-esm": "^1.0.1",
+    "@types/node": "^18.14.4",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
     "core-js": "^3.18.3",
-    "node-releaser": "^2.0.0-beta.3",
-    "rollup": "^3.6.0"
+    "eslint": "^8.35.0",
+    "jest": "^29.4.3",
+    "node-releaser": "^2.0.0-beta.4",
+    "rollup": "^3.6.0",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",

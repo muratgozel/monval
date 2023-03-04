@@ -1,9 +1,6 @@
 # monval
 Precise and simple money utility with exchange rates support.
 
-![NPM](https://img.shields.io/npm/l/monval)
-[![npm version](https://badge.fury.io/js/monval.svg)](https://badge.fury.io/js/monval)
-
 **monval** uses **[Gaussian rounding](https://en.wikipedia.org/wiki/Rounding#Round_half_to_even)** when exporting values in a fixed length. Currently, the gaussian method is the only supported rounding method but the module flexible enough to provide more rounding methods in future releases.
 
 ## Install
@@ -20,51 +17,57 @@ const {monval} = require('monval')
 // or es
 import {monval} from 'monval'
 ```
-or inject via script tag:
+and injection with script tag + `window.monval` global.:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/monval@2/dist/browser/iife/index.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/monval@2/dist/browser/iife/monval.spec.js" type="text/javascript"></script>
 ```
-You can access it via global `window.monval` when import it via script tag.
 
 ## Usage
 ```js
-// ten dollars in a pocket
-const pocket = monval.create(10, 'usd')
+// start with ten dollars in a pocket
+const account = monval.create(10, 'USD')
 
-// 100.789$ income!
-pocket.add(100.789)
+// incoming 100.789$
+account.add(100.789)
 
 // 21.66$ spent!
-pocket.subtract(21.66)
+account.subtract(21.66)
 
 // 10 percent increase!
-pocket.add('%10')
+account.add('%10')
 
 // 20 percent discount!
-pocket.subtract('%20')
+account.subtract('%20')
 
 // The value always stored as float.
-assert.strictEqual(pocket.toFloat(), 78.43352)
+assert.strictEqual(account.toFloat(), 78.43352)
 // toFixed method rounds the value according to the rounding algorithm and
 // the decimal length standart to the currency
-assert.strictEqual(pocket.toFixed(), '78.43')
+assert.strictEqual(account.toFixed(), '78.43')
+
+// pretty print
+monval.create(123.4567, 'EUR').pretty() // € 123.46
+monval.create(123.4567, 'EUR').pretty(4) // € 123.4567
 ```
 Let's load exchange rates:
 ```js
 const sampleExchangeRates = {/* EUR: 0.99, TRY: 1.11 ... */}
-pocket.rates = sampleExchangeRates
+monval.exchangeRatesBaseCurrency = 'USD'
+monval.exchangeRates = sampleExchangeRates.rates
 
 // convert our usd to try
-pocket.exchange('try')
+account.exchange('TRY')
 // the pocket now has
-assert.strictEqual(pocket.toFloat(), 478.16211132800004)
+assert.strictEqual(account.toFloat(), 478.16211132800004)
 // turkish liras
-assert.strictEqual(pocket.currencyCode, 'TRY')
+assert.strictEqual(account.money.currency, 'TRY')
+
+account.pretty() // ₺ 478.16
 
 // add more dollars into the pocket!
-pocket.add(100, 'usd')
+account.add(100, 'usd')
 // now we have 1087.8 try!
-assert.strictEqual(pocket.toFixed(), '1087.8')
+assert.strictEqual(acount.toFixed(), '1087.8')
 ```
 
 ---

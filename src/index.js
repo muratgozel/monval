@@ -1,1 +1,0 @@
-export {monval, currencies} from './Monval'
