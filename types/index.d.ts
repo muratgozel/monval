@@ -1,7 +1,11 @@
 declare module 'monval' {
+    export type {Monval} from '@/monval'
+    export type {Account} from '@/monval'
+    export const monval: Monval
+
     type TypeGuard<T> = (val: unknown) => T
 
-    const currencies = [
+    export const currencies = [
         "AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND",
         "BOB","BRL","BSD","BTC","BTN","BWP","BYN","BZD","CAD","CDF","CHF","CLF","CLP","CNH","CNY","COP","CRC","CUC",
         "CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GEL","GGP","GHS","GIP",
@@ -13,13 +17,13 @@ declare module 'monval' {
         "TTD","TWD","TZS","UAH","UGX","USD","UYU","UZS","VEF","VES","VND","VUV","WST","XAF","XAG","XAU","XCD","XDR",
         "XOF","XPD","XPF","XPT","YER","ZAR","ZMW","ZWL"
     ] as const
-    type Currency = typeof currencies[number]
+    export type Currency = typeof currencies[number]
 
-    type ExchangeRatesObject = {
+    export type ExchangeRatesObject = {
         [k in Currency]?: number
     }
 
-    interface Money {
+    export interface Money {
         currency: Currency
         number: number
     }

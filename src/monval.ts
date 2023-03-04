@@ -85,13 +85,11 @@ export class Monval {
     }
 }
 
-export type MonvalInstance = Monval
-
 export class Account {
-    monval: MonvalInstance
+    monval: Monval
     money: Money
 
-    constructor(monval: MonvalInstance, money: Money) {
+    constructor(monval: Monval, money: Money) {
         this.monval = monval
         this.money = money
     }
@@ -219,6 +217,4 @@ export class Account {
     }
 }
 
-export type AccountInstance = Account
-
-export const monval = new Monval()
+export const monval: Monval = new Monval()
