@@ -1,3 +1,4 @@
+import _typeof from '@babel/runtime-corejs3/helpers/typeof';
 import _slicedToArray from '@babel/runtime-corejs3/helpers/slicedToArray';
 import _classCallCheck from '@babel/runtime-corejs3/helpers/classCallCheck';
 import _createClass from '@babel/runtime-corejs3/helpers/createClass';
@@ -15,6 +16,9 @@ var withTuple = function withTuple(list) {
   return function (prop) {
     return _includesInstanceProperty(list).call(list, prop);
   };
+};
+var hasProp = function hasProp(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
 };
 var Monval = /*#__PURE__*/function () {
   function Monval() {
@@ -43,9 +47,25 @@ var Monval = /*#__PURE__*/function () {
     _defineProperty(this, "reRate", /%[0-9]+((.|,)[0-9]+)?/);
   }
   _createClass(Monval, [{
+    key: "isValidInput",
+    value: function isValidInput(input) {
+      if (this.isMoney(input)) return true;
+      if (typeof input === 'string' && this.reNumberWithCurrency.test(input)) {
+        var _input$split = input.split(' '),
+          _input$split2 = _slicedToArray(_input$split, 2),
+          currency = _input$split2[0];
+          _input$split2[1];
+        return this.isCurrency(currency);
+      }
+      return false;
+    }
+  }, {
     key: "create",
     value: function create(input, currency) {
       var cur = currency || this.defaultCurrency;
+      if (this.isMoney(input)) {
+        return new Account(this, input);
+      }
       if (this.isNumber(input)) {
         var money = {
           currency: cur,
@@ -61,17 +81,20 @@ var Monval = /*#__PURE__*/function () {
         return new Account(this, _money2);
       }
       if (this.reNumberWithCurrency.test(input)) {
-        var _input$split = input.split(' '),
-          _input$split2 = _slicedToArray(_input$split, 2),
-          _currency = _input$split2[0],
-          num = _input$split2[1];
+        var _input$split3 = input.split(' '),
+          _input$split4 = _slicedToArray(_input$split3, 2),
+          _currency = _input$split4[0],
+          num = _input$split4[1];
+        if (!this.isCurrency(_currency)) {
+          throw new Error("Bad input. No such currency as ".concat(_currency));
+        }
         var _money3 = {
           currency: _currency,
           number: _parseFloat(num)
         };
         return new Account(this, _money3);
       }
-      throw new Error("Bad input. Valid kinds of input are create(\"USD 1.23\"), create(\"1.23\", \"EUR\") or create(\"1.23\").");
+      throw new Error("Bad input. Valid kinds of inputs are create(\"EUR 1.23\"), create(\"1.23\", \"EUR\"), create(\"1.23\") or create({number: 1.23, currency: 'EUR'}).");
     }
   }, {
     key: "exchange",
@@ -125,6 +148,23 @@ var Monval = /*#__PURE__*/function () {
     key: "isCurrency",
     value: function isCurrency(v) {
       return typeof v === 'string' ? withTuple(currencies)(v) : false;
+    }
+  }, {
+    key: "isObject",
+    value: function isObject(v) {
+      return typeof v === 'function' || _typeof(v) === 'object' && !!v;
+    }
+  }, {
+    key: "isMoney",
+    value: function isMoney(v) {
+      if (this.isObject(v)) {
+        if (hasProp(v, 'currency') && hasProp(v, 'number')) {
+          if (this.isCurrency(v.currency) && this.isNumber(v.number)) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }]);
   return Monval;

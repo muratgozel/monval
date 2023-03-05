@@ -1,8 +1,8 @@
 import {expect, test} from '@jest/globals'
-import {monval, Monval, Account, currencies} from '../build'
+import {monval, Account} from '../build'
 import sampleExchangeRates from './sampleExchangeRates.json' assert {type: 'json'}
 
-test('creates account object from string and number based inputs', () => {
+test('creates account object from string, object and number based inputs', () => {
     const account = monval.create('EUR 1.23')
     expect(account).toBeInstanceOf(Account)
     expect(account.money).toEqual({number: 1.23, currency: 'EUR'})
@@ -12,6 +12,16 @@ test('creates account object from string and number based inputs', () => {
     monval.defaultCurrency = 'USD'
 
     expect(monval.create('1.23').money).toEqual({number: 1.23, currency: 'USD'})
+    expect(monval.create({number: 1.23, currency: 'USD'}).money).toEqual({number: 1.23, currency: 'USD'})
+    expect(() => monval.create({number: 1.23, currency: 'XXX'})).toThrow()
+})
+
+test('validates inputs', () => {
+    expect(monval.isValidInput('EUR 1.23')).toEqual(true)
+    expect(monval.isValidInput({number: 1.23, currency: 'EUR'})).toEqual(true)
+    expect(monval.isValidInput('XXX 1.23')).toEqual(false)
+    expect(monval.isValidInput('1.23')).toEqual(false)
+    expect(monval.isValidInput({number: '1.23', currency: 'EUR'})).toEqual(false)
 })
 
 test('validates currencies', () => {

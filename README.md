@@ -69,6 +69,11 @@ account.add(100, 'usd')
 // now we have 1087.8 try!
 assert.strictEqual(acount.toFixed(), '1087.8')
 ```
+Additional features:
+```js
+monval.isCurrency('XXX') // false
+monval.isCurrency('EUR') // true
+```
 
 ---
 

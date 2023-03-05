@@ -4,6 +4,8 @@ import type {Currency, ExchangeRatesObject, Inference, Money, Primitives} from '
 const withTuple = <List extends Primitives[]>(list: readonly [...List]) =>
     (prop: Inference<List[number]>): prop is Inference<List[number]> & List[number] =>
         list.includes(prop)
+const hasProp = <Obj, Prop extends string>(obj: Obj, prop: Prop): obj is Obj & Record<Prop, unknown> =>
+    Object.prototype.hasOwnProperty.call(obj, prop)
 
 export class Monval {
     currencies: Currency[] = currencies
@@ -20,8 +22,23 @@ export class Monval {
     reOnlyNumbers = /^[0-9]+((.|,)[0-9]+)?((.|,)[0-9]+)?/
     reRate = /%[0-9]+((.|,)[0-9]+)?/
 
-    create(input: string | number, currency?: Currency) {
+    isValidInput(input: string | number | Money) {
+        if (this.isMoney(input)) return true
+
+        if (typeof input === 'string' && this.reNumberWithCurrency.test(input)) {
+            const [currency, _num] = input.split(' ') as [string, string]
+            return this.isCurrency(currency)
+        }
+
+        return false
+    }
+
+    create(input: string | number | Money, currency?: Currency) {
         const cur = currency || this.defaultCurrency
+
+        if (this.isMoney(input)) {
+            return new Account(this, input)
+        }
 
         if (this.isNumber(input)) {
             const money: Money = {currency: cur, number: input}
@@ -34,12 +51,15 @@ export class Monval {
         }
 
         if (this.reNumberWithCurrency.test(input)) {
-            const [currency, num] = input.split(' ') as [Currency, string]
+            const [currency, num] = input.split(' ') as [string, string]
+            if (!this.isCurrency(currency)) {
+                throw new Error(`Bad input. No such currency as ${currency}`)
+            }
             const money: Money = {currency: currency, number: parseFloat(num)}
             return new Account(this, money)
         }
 
-        throw new Error(`Bad input. Valid kinds of input are create("USD 1.23"), create("1.23", "EUR") or create("1.23").`)
+        throw new Error(`Bad input. Valid kinds of inputs are create("EUR 1.23"), create("1.23", "EUR"), create("1.23") or create({number: 1.23, currency: 'EUR'}).`)
     }
 
     exchange(money: Money, target: Currency) {
@@ -90,6 +110,21 @@ export class Monval {
 
     isCurrency(v: unknown): v is Currency {
         return typeof v === 'string' ? withTuple(currencies)(v) : false
+    }
+
+    isObject(v: unknown): v is object {
+        return typeof v === 'function' || (typeof v === 'object' && !!v)
+    }
+
+    isMoney(v: unknown): v is Money {
+        if (this.isObject(v)) {
+            if (hasProp(v, 'currency') && hasProp(v, 'number')) {
+                if (this.isCurrency(v.currency) && this.isNumber(v.number)) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }
 
