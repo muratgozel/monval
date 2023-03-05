@@ -1,4 +1,17 @@
 declare module 'monval' {
+    export type Primitives =
+        | string
+        | number
+        | bigint
+        | boolean
+        | symbol
+        | null
+        | undefined
+
+    export type InferPrimitive<T, P> = P extends any ? T extends P ? P : never : never;
+
+    export type Inference<T> = InferPrimitive<T, Primitives>
+
     export type {Monval} from '@/monval'
     export type {Account} from '@/monval'
     export const monval: Monval

@@ -1,5 +1,9 @@
 import {currencies} from "@/currencies"
-import type {Currency, ExchangeRatesObject, Money} from 'monval'
+import type {Currency, ExchangeRatesObject, Inference, Money, Primitives} from 'monval'
+
+const withTuple = <List extends Primitives[]>(list: readonly [...List]) =>
+    (prop: Inference<List[number]>): prop is Inference<List[number]> & List[number] =>
+        list.includes(prop)
 
 export class Monval {
     currencies: Currency[] = currencies
@@ -82,6 +86,10 @@ export class Monval {
 
     isNumber(v: unknown): v is number {
         return typeof v === 'number' && Number.isFinite(v)
+    }
+
+    isCurrency(v: unknown): v is Currency {
+        return typeof v === 'string' ? withTuple(currencies)(v) : false
     }
 }
 
