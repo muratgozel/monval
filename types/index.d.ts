@@ -1,4 +1,7 @@
 declare module 'monval' {
+    export type Monval = import('@/monval').Monval
+    export type Account = import('@/monval').Account
+
     export type Primitives =
         | string
         | number
@@ -12,8 +15,6 @@ declare module 'monval' {
 
     export type Inference<T> = InferPrimitive<T, Primitives>
 
-    export type {Monval} from '@/monval'
-    export type {Account} from '@/monval'
     export const monval: Monval
 
     export const currencies = [

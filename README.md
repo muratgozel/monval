@@ -17,9 +17,9 @@ const {monval} = require('monval')
 // or es
 import {monval} from 'monval'
 ```
-and injection with script tag + `window.monval` global.:
+and injection with script tag + `window.monval` global:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/monval@2/dist/browser/iife/monval.spec.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/monval@2/dist/browser/iife/index.js" type="text/javascript"></script>
 ```
 
 ## Usage
