@@ -1,5 +1,9 @@
 {
-  "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+  "extends": [
+    "@tsconfig/node18/tsconfig.json",
+    "@tsconfig/esm/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
+  ],
   "compilerOptions": {
     "outDir": "build",
     "baseUrl": ".",
@@ -9,7 +13,7 @@
       "types"
     ],
     "paths": {
-      "@/*": ["src/*"]
+      "#src/*": ["src/*"]
     }
   },
   "include": [

@@ -35,8 +35,8 @@ export default [
         plugins: [
             alias({
                 entries: [{
-                    find: /^@\/(.*)/,
-                    replacement: './$1.js'
+                    find: /^#src\/(.*)/,
+                    replacement: 'build/$1.js'
                 }]
             }),
             nodeResolve({preferBuiltins: false}),
@@ -71,8 +71,8 @@ export default [
         plugins: [
             alias({
                 entries: [{
-                    find: /^@\/(.*)/,
-                    replacement: './$1.js'
+                    find: /^#src\/(.*)/,
+                    replacement: 'build/$1.js'
                 }]
             }),
             nodeResolve({preferBuiltins: false}),

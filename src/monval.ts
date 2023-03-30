@@ -1,17 +1,12 @@
-import {currencies} from "@/currencies"
-import type {Currency, ExchangeRatesObject, Inference, Money, Primitives} from 'monval'
-
-const withTuple = <List extends Primitives[]>(list: readonly [...List]) =>
-    (prop: Inference<List[number]>): prop is Inference<List[number]> & List[number] =>
-        list.includes(prop)
-const hasProp = <Obj, Prop extends string>(obj: Obj, prop: Prop): obj is Obj & Record<Prop, unknown> =>
-    Object.prototype.hasOwnProperty.call(obj, prop)
+import type {ExchangeRatesObject, Money} from 'monval'
+import type {CurrencyCode} from '#src/currencies'
+import {currencyCodes} from '#src/currencies'
 
 export class Monval {
-    currencies: Currency[] = currencies
-    defaultCurrency: Currency = 'EUR'
+    currencyCodes: CurrencyCode[] = Array.from(currencyCodes)
+    defaultCurrency: CurrencyCode = 'EUR'
     exchangeRates: ExchangeRatesObject = {}
-    exchangeRatesBaseCurrency: Currency = 'EUR'
+    exchangeRatesBaseCurrency: CurrencyCode = 'EUR'
     currencySymbolUnicodeMap: {[index: string]: string} = {
         TRY: '20BA', USD: '0024', EUR: '20ac', GBP: '00A3',
         JPY: '00A5', AMD: '058F', AFN: '060B', THB: '0E3F',
@@ -33,7 +28,7 @@ export class Monval {
         return false
     }
 
-    create(input: string | number | Money, currency?: Currency) {
+    create(input: string | number | Money, currency?: CurrencyCode) {
         const cur = currency || this.defaultCurrency
 
         if (this.isMoney(input)) {
@@ -59,12 +54,12 @@ export class Monval {
             return new Account(this, money)
         }
 
-        throw new Error(`Bad input. Valid kinds of inputs are create("EUR 1.23"), create("1.23", "EUR"), create("1.23") or create({number: 1.23, currency: 'EUR'}).`)
+        throw new Error('Bad input. Valid kinds of inputs are create("EUR 1.23"), create("1.23", "EUR"), create("1.23") or create({number: 1.23, currency: \'EUR\'}).')
     }
 
-    exchange(money: Money, target: Currency) {
+    exchange(money: Money, target: CurrencyCode) {
         if (!Object.hasOwn(this.exchangeRates, this.exchangeRatesBaseCurrency)) {
-            throw new Error(`Exchange rates not found.`)
+            throw new Error('Exchange rates not found.')
         }
 
         if (!Object.hasOwn(this.exchangeRates, money.currency)) {
@@ -81,7 +76,7 @@ export class Monval {
         return money
     }
 
-    getCurrencySymbol(currency: Currency): string {
+    getCurrencySymbol(currency: CurrencyCode): string {
         if (Object.hasOwn(this.currencySymbolUnicodeMap, currency)) {
             return String.fromCharCode(parseInt(this.currencySymbolUnicodeMap[currency] || '', 16))
         }
@@ -90,13 +85,14 @@ export class Monval {
 
     round(n: number, d: number, algorithm = 'GAUSSIAN') {
         switch (algorithm) {
-            case 'GAUSSIAN':
-                const x = n * Math.pow(10, d)
-                const r = Math.round(x)
-                const br = Math.abs(x) % 1 === 0.5 ? (r % 2 === 0 ? r : r-1) : r
-                return br / Math.pow(10, d)
-            default:
-                throw new Error('Unsupported rounding algorithm.')
+        case 'GAUSSIAN': {
+            const x = n * Math.pow(10, d)
+            const r = Math.round(x)
+            const br = Math.abs(x) % 1 === 0.5 ? (r % 2 === 0 ? r : r-1) : r
+            return br / Math.pow(10, d)
+        }
+        default:
+            throw new Error('Unsupported rounding algorithm.')
         }
     }
 
@@ -108,18 +104,18 @@ export class Monval {
         return typeof v === 'number' && Number.isFinite(v)
     }
 
-    isCurrency(v: unknown): v is Currency {
-        return typeof v === 'string' ? withTuple(currencies)(v) : false
+    isCurrency(v: unknown): v is CurrencyCode {
+        return typeof v === 'string' && this.currencyCodes.find((code) => code === v) !== undefined
     }
 
     isObject(v: unknown): v is object {
-        return typeof v === 'function' || (typeof v === 'object' && !!v)
+        return (!!v) && (v.constructor === Object)
     }
 
     isMoney(v: unknown): v is Money {
         if (this.isObject(v)) {
-            if (hasProp(v, 'currency') && hasProp(v, 'number')) {
-                if (this.isCurrency(v.currency) && this.isNumber(v.number)) {
+            if (Object.hasOwn(v, 'currency') && Object.hasOwn(v, 'number')) {
+                if (this.isCurrency((v as Money).currency) && this.isNumber((v as Money).number)) {
                     return true
                 }
             }
@@ -137,7 +133,7 @@ export class Account {
         this.money = money
     }
 
-    add(numberOrRate: number | string, currency?: Currency): this {
+    add(numberOrRate: number | string, currency?: CurrencyCode): this {
         const cur = currency || this.money.currency
 
         if (this.monval.isNumber(numberOrRate)) {
@@ -154,7 +150,7 @@ export class Account {
             return this.addMoney(money)
         }
 
-        throw new Error(`Bad input. You should specify either number or rate such as "%1.23"`)
+        throw new Error('Bad input. You should specify either number or rate such as "%1.23"')
     }
 
     addRate(rate: number): this {
@@ -174,7 +170,7 @@ export class Account {
         return this
     }
 
-    subtract(numberOrRate: number | string, currency?: Currency): this {
+    subtract(numberOrRate: number | string, currency?: CurrencyCode): this {
         const cur = currency || this.money.currency
 
         if (this.monval.isNumber(numberOrRate)) {
@@ -191,7 +187,7 @@ export class Account {
             return this.subtractMoney(money)
         }
 
-        throw new Error(`Bad input. You should specify either number or rate such as "%1.23"`)
+        throw new Error('Bad input. You should specify either number or rate such as "%1.23"')
     }
 
     subtractRate(rate: number): this {
@@ -211,9 +207,9 @@ export class Account {
         return this
     }
 
-    exchange(target: Currency): this {
+    exchange(target: CurrencyCode): this {
         if (!Object.hasOwn(this.monval.exchangeRates, this.monval.exchangeRatesBaseCurrency)) {
-            throw new Error(`Exchange rates not found.`)
+            throw new Error('Exchange rates not found.')
         }
 
         if (!Object.hasOwn(this.monval.exchangeRates, target)) {
@@ -235,12 +231,12 @@ export class Account {
         }
 
         if (!str.includes('.')) {
-            return str + '.' + Array.apply(null, Array(_decilen)).map(Number.prototype.valueOf, 0).join('')
+            return str + '.' + Array.from(Array(_decilen)).map(Number.prototype.valueOf, 0).join('')
         }
 
         const existingDecimalsLen = (str.split('.')[1] || []).length
         if (_decilen > existingDecimalsLen) {
-            return str + Array.apply(null, Array(_decilen - existingDecimalsLen)).map(Number.prototype.valueOf, 0).join('')
+            return str + Array.from(Array(_decilen - existingDecimalsLen)).map(Number.prototype.valueOf, 0).join('')
         }
 
         return str

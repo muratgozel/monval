@@ -1,29 +1,24 @@
-import _typeof from '@babel/runtime-corejs3/helpers/typeof';
 import _slicedToArray from '@babel/runtime-corejs3/helpers/slicedToArray';
 import _classCallCheck from '@babel/runtime-corejs3/helpers/classCallCheck';
 import _createClass from '@babel/runtime-corejs3/helpers/createClass';
 import _defineProperty from '@babel/runtime-corejs3/helpers/defineProperty';
-import _includesInstanceProperty from '@babel/runtime-corejs3/core-js/instance/includes';
+import _Array$from from '@babel/runtime-corejs3/core-js/array/from';
 import _parseFloat from '@babel/runtime-corejs3/core-js/parse-float';
 import _parseInt from '@babel/runtime-corejs3/core-js/parse-int';
 import _Number$isFinite from '@babel/runtime-corejs3/core-js/number/is-finite';
+import _findInstanceProperty from '@babel/runtime-corejs3/core-js/instance/find';
 import _sliceInstanceProperty from '@babel/runtime-corejs3/core-js/instance/slice';
+import _includesInstanceProperty from '@babel/runtime-corejs3/core-js/instance/includes';
 import _mapInstanceProperty from '@babel/runtime-corejs3/core-js/instance/map';
 
-var currencies = ["AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTC", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLF", "CLP", "CNH", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GGP", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLL", "SOS", "SRD", "SSP", "STD", "STN", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VEF", "VES", "VND", "VUV", "WST", "XAF", "XAG", "XAU", "XCD", "XDR", "XOF", "XPD", "XPF", "XPT", "YER", "ZAR", "ZMW", "ZWL"];
+var currencyCodes$1 = ['AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHF', 'CLF', 'CLP', 'CNH', 'CNY', 'COP', 'CRC', 'CUC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GGP', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'IMP', 'INR', 'IQD', 'IRR', 'ISK', 'JEP', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'SSP', 'STD', 'STN', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VEF', 'VES', 'VND', 'VUV', 'WST', 'XAF', 'XAG', 'XAU', 'XCD', 'XDR', 'XOF', 'XPD', 'XPF', 'XPT', 'YER', 'ZAR', 'ZMW', 'ZWL'];
 
-var withTuple = function withTuple(list) {
-  return function (prop) {
-    return _includesInstanceProperty(list).call(list, prop);
-  };
-};
-var hasProp = function hasProp(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-};
+var currencyCodes = ['AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 'BSD', 'BTC', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHF', 'CLF', 'CLP', 'CNH', 'CNY', 'COP', 'CRC', 'CUC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GGP', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 'IMP', 'INR', 'IQD', 'IRR', 'ISK', 'JEP', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD', 'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLL', 'SOS', 'SRD', 'SSP', 'STD', 'STN', 'SVC', 'SYP', 'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VEF', 'VES', 'VND', 'VUV', 'WST', 'XAF', 'XAG', 'XAU', 'XCD', 'XDR', 'XOF', 'XPD', 'XPF', 'XPT', 'YER', 'ZAR', 'ZMW', 'ZWL'];
+
 var Monval = /*#__PURE__*/function () {
   function Monval() {
     _classCallCheck(this, Monval);
-    _defineProperty(this, "currencies", currencies);
+    _defineProperty(this, "currencyCodes", _Array$from(currencyCodes));
     _defineProperty(this, "defaultCurrency", 'EUR');
     _defineProperty(this, "exchangeRates", {});
     _defineProperty(this, "exchangeRatesBaseCurrency", 'EUR');
@@ -94,13 +89,13 @@ var Monval = /*#__PURE__*/function () {
         };
         return new Account(this, _money3);
       }
-      throw new Error("Bad input. Valid kinds of inputs are create(\"EUR 1.23\"), create(\"1.23\", \"EUR\"), create(\"1.23\") or create({number: 1.23, currency: 'EUR'}).");
+      throw new Error('Bad input. Valid kinds of inputs are create("EUR 1.23"), create("1.23", "EUR"), create("1.23") or create({number: 1.23, currency: \'EUR\'}).');
     }
   }, {
     key: "exchange",
     value: function exchange(money, target) {
       if (!Object.hasOwn(this.exchangeRates, this.exchangeRatesBaseCurrency)) {
-        throw new Error("Exchange rates not found.");
+        throw new Error('Exchange rates not found.');
       }
       if (!Object.hasOwn(this.exchangeRates, money.currency)) {
         throw new Error("Exchange rate for ".concat(money.currency, " not found."));
@@ -126,10 +121,12 @@ var Monval = /*#__PURE__*/function () {
       var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'GAUSSIAN';
       switch (algorithm) {
         case 'GAUSSIAN':
-          var x = n * Math.pow(10, d);
-          var r = Math.round(x);
-          var br = Math.abs(x) % 1 === 0.5 ? r % 2 === 0 ? r : r - 1 : r;
-          return br / Math.pow(10, d);
+          {
+            var x = n * Math.pow(10, d);
+            var r = Math.round(x);
+            var br = Math.abs(x) % 1 === 0.5 ? r % 2 === 0 ? r : r - 1 : r;
+            return br / Math.pow(10, d);
+          }
         default:
           throw new Error('Unsupported rounding algorithm.');
       }
@@ -147,18 +144,21 @@ var Monval = /*#__PURE__*/function () {
   }, {
     key: "isCurrency",
     value: function isCurrency(v) {
-      return typeof v === 'string' ? withTuple(currencies)(v) : false;
+      var _context;
+      return typeof v === 'string' && _findInstanceProperty(_context = this.currencyCodes).call(_context, function (code) {
+        return code === v;
+      }) !== undefined;
     }
   }, {
     key: "isObject",
     value: function isObject(v) {
-      return typeof v === 'function' || _typeof(v) === 'object' && !!v;
+      return !!v && v.constructor === Object;
     }
   }, {
     key: "isMoney",
     value: function isMoney(v) {
       if (this.isObject(v)) {
-        if (hasProp(v, 'currency') && hasProp(v, 'number')) {
+        if (Object.hasOwn(v, 'currency') && Object.hasOwn(v, 'number')) {
           if (this.isCurrency(v.currency) && this.isNumber(v.number)) {
             return true;
           }
@@ -198,7 +198,7 @@ var Account = /*#__PURE__*/function () {
         };
         return this.addMoney(_money4);
       }
-      throw new Error("Bad input. You should specify either number or rate such as \"%1.23\"");
+      throw new Error('Bad input. You should specify either number or rate such as "%1.23"');
     }
   }, {
     key: "addRate",
@@ -238,7 +238,7 @@ var Account = /*#__PURE__*/function () {
         };
         return this.subtractMoney(_money5);
       }
-      throw new Error("Bad input. You should specify either number or rate such as \"%1.23\"");
+      throw new Error('Bad input. You should specify either number or rate such as "%1.23"');
     }
   }, {
     key: "subtractRate",
@@ -261,7 +261,7 @@ var Account = /*#__PURE__*/function () {
     key: "exchange",
     value: function exchange(target) {
       if (!Object.hasOwn(this.monval.exchangeRates, this.monval.exchangeRatesBaseCurrency)) {
-        throw new Error("Exchange rates not found.");
+        throw new Error('Exchange rates not found.');
       }
       if (!Object.hasOwn(this.monval.exchangeRates, target)) {
         throw new Error("Exchange rate for ".concat(target, " not found."));
@@ -279,13 +279,13 @@ var Account = /*#__PURE__*/function () {
         return str;
       }
       if (!_includesInstanceProperty(str).call(str, '.')) {
-        var _context;
-        return str + '.' + _mapInstanceProperty(_context = Array.apply(null, Array(_decilen))).call(_context, Number.prototype.valueOf, 0).join('');
+        var _context2;
+        return str + '.' + _mapInstanceProperty(_context2 = _Array$from(Array(_decilen))).call(_context2, Number.prototype.valueOf, 0).join('');
       }
       var existingDecimalsLen = (str.split('.')[1] || []).length;
       if (_decilen > existingDecimalsLen) {
-        var _context2;
-        return str + _mapInstanceProperty(_context2 = Array.apply(null, Array(_decilen - existingDecimalsLen))).call(_context2, Number.prototype.valueOf, 0).join('');
+        var _context3;
+        return str + _mapInstanceProperty(_context3 = _Array$from(Array(_decilen - existingDecimalsLen))).call(_context3, Number.prototype.valueOf, 0).join('');
       }
       return str;
     }
@@ -310,5 +310,5 @@ var Account = /*#__PURE__*/function () {
 }();
 var monval = new Monval();
 
-export { Account, Monval, currencies, monval };
+export { Account, Monval, currencyCodes$1 as currencyCodes, monval };
 //# sourceMappingURL=index.js.map
