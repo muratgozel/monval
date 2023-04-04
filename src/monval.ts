@@ -1,6 +1,7 @@
 import type {ExchangeRatesObject, Money} from 'monval'
-import type {CurrencyCode} from '#src/currencies'
-import {currencyCodes} from '#src/currencies'
+import type {CurrencyCode} from './currencies'
+
+import {currencyCodes} from './currencies'
 
 export class Monval {
     currencyCodes: CurrencyCode[] = Array.from(currencyCodes)

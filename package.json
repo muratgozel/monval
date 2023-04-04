@@ -1,6 +1,6 @@
 {
   "name": "monval",
-  "version": "v2.4.2",
+  "version": "v2.4.3",
   "description": "Precise and simple money utility with exchange rates support.",
   "imports": {
     "#src/*": "./build/*.js"
