@@ -18,7 +18,7 @@ export class Monval {
     reOnlyNumbers = /^[0-9]+((.|,)[0-9]+)?((.|,)[0-9]+)?/
     reRate = /%[0-9]+((.|,)[0-9]+)?/
 
-    isValidInput(input: string | number | Money) {
+    isValidInput(input: string | number | Money): boolean {
         if (this.isMoney(input)) return true
 
         if (typeof input === 'string' && this.reNumberWithCurrency.test(input)) {
@@ -29,7 +29,7 @@ export class Monval {
         return false
     }
 
-    create(input: string | number | Money, currency?: CurrencyCode) {
+    create(input: string | number | Money, currency?: CurrencyCode): Account {
         const cur = currency || this.defaultCurrency
 
         if (this.isMoney(input)) {
@@ -58,7 +58,7 @@ export class Monval {
         throw new Error('Bad input. Valid kinds of inputs are create("EUR 1.23"), create("1.23", "EUR"), create("1.23") or create({number: 1.23, currency: \'EUR\'}).')
     }
 
-    exchange(money: Money, target: CurrencyCode) {
+    exchange(money: Money, target: CurrencyCode): Money {
         if (!Object.hasOwn(this.exchangeRates, this.exchangeRatesBaseCurrency)) {
             throw new Error('Exchange rates not found.')
         }
@@ -84,7 +84,7 @@ export class Monval {
         return currency
     }
 
-    round(n: number, d: number, algorithm = 'GAUSSIAN') {
+    round(n: number, d: number, algorithm = 'GAUSSIAN'): number {
         switch (algorithm) {
         case 'GAUSSIAN': {
             const x = n * Math.pow(10, d)
@@ -243,15 +243,15 @@ export class Account {
         return str
     }
 
-    toFloat() {
+    toFloat(): number {
         return this.money.number
     }
 
-    toObject() {
+    toObject(): Money {
         return this.money
     }
 
-    pretty(decilen?: number) {
+    pretty(decilen?: number): string {
         const _decilen = decilen || this.monval.decilen
         return this.monval.getCurrencySymbol(this.money.currency) + ' ' + this.toFixed(_decilen)
     }

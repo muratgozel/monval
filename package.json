@@ -1,27 +1,20 @@
 {
   "name": "monval",
-  "version": "v2.4.4",
+  "version": "v2.4.5",
   "description": "Precise and simple money utility with exchange rates support.",
-  "imports": {
-    "#src/*": "./build/*"
-  },
   "exports": {
-    ".": {
-      "import": "./dist/browser/es/index.js",
-      "require": "./dist/browser/cjs/index.js"
-    },
-    "./browser": {
-      "import": "./dist/browser/es/index.js",
-      "require": "./dist/browser/cjs/index.js"
-    }
+    "import": "./dist/monval.es.js",
+    "require": "./dist/monval.cjs.js",
+    "default": "./dist/monval.cjs.js"
   },
-  "main": "./dist/browser/cjs/index.js",
-  "module": "./dist/browser/es/index.js",
-  "types": "./types/index.d.ts",
+  "main": "./dist/monval.cjs.js",
+  "module": "./dist/monval.es.js",
+  "types": "types",
   "type": "module",
   "scripts": {
     "precompile": "rm -rf build/*",
     "compile": "tsc -p tsconfig.json",
+    "prebuild": "rm -rf dist/*",
     "build": "rollup --config rollup.config.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },

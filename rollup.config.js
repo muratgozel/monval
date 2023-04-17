@@ -3,7 +3,6 @@ import commonjs from '@rollup/plugin-commonjs'
 import babel from '@rollup/plugin-babel'
 import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
-import alias from '@rollup/plugin-alias'
 
 const babelPlugins=[]
 
@@ -23,22 +22,16 @@ export default [
         output: [
             {
                 format: 'cjs',
-                file: 'dist/browser/cjs/index.js',
-                sourcemap: true
+                file: 'dist/monval.cjs.js',
+                sourcemap: false
             },
             {
                 format: 'es',
-                file: 'dist/browser/es/index.js',
-                sourcemap: true
+                file: 'dist/monval.es.js',
+                sourcemap: false
             }
         ],
         plugins: [
-            alias({
-                entries: [{
-                    find: /^#src\/(.*)/,
-                    replacement: 'build/$1.js'
-                }]
-            }),
             nodeResolve({preferBuiltins: false}),
             commonjs({sourceMap: true}),
             json(),
@@ -62,19 +55,14 @@ export default [
             {
                 format: 'iife',
                 name: 'monval',
-                file: 'dist/browser/iife/index.js',
+                file: 'dist/monval.iife.js',
+                sourcemap: true,
                 globals: {
                     monval: 'monval'
                 }
             }
         ],
         plugins: [
-            alias({
-                entries: [{
-                    find: /^#src\/(.*)/,
-                    replacement: 'build/$1.js'
-                }]
-            }),
             nodeResolve({preferBuiltins: false}),
             commonjs({sourceMap: true}),
             json(),
