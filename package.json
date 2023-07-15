@@ -1,18 +1,13 @@
 {
   "name": "monval",
-  "version": "v2.4.9",
+  "version": "v2.4.10",
   "description": "Precise and simple money utility with exchange rates support.",
   "type": "module",
   "exports": {
     ".": {
-      "import": {
-        "types": "./types",
-        "default": "./dist/monval.es.js"
-      },
-      "require": {
-        "types": "./types",
-        "default": "./dist/monval.cjs.js"
-      }
+      "types": "./types",
+      "import": "./dist/monval.es.js",
+      "require": "./dist/monval.cjs.js"
     }
   },
   "types": "./types",
