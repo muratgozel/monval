@@ -8,6 +8,7 @@
     "outDir": "build",
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "rootDir": "src",
     "typeRoots": [
       "node_modules/@types",
       "types"

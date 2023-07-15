@@ -1,5 +1,4 @@
-import type {ExchangeRatesObject, Money} from 'monval'
-import type {CurrencyCode} from './currencies'
+import type {ExchangeRatesObject, Money, CurrencyCode} from 'monval'
 
 import {currencyCodes} from './currencies.js'
 

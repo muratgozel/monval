@@ -10,5 +10,3 @@ export const currencyCodes = [
     'TTD','TWD','TZS','UAH','UGX','USD','UYU','UZS','VEF','VES','VND','VUV','WST','XAF','XAG','XAU','XCD','XDR',
     'XOF','XPD','XPF','XPT','YER','ZAR','ZMW','ZWL'
 ] as const
-
-export type CurrencyCode = typeof currencyCodes[number]
