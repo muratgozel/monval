@@ -1,8 +1,9 @@
 {
   "name": "monval",
-  "version": "v2.4.5",
+  "version": "v2.4.6",
   "description": "Precise and simple money utility with exchange rates support.",
   "exports": {
+    "types": "types",
     "import": "./dist/monval.es.js",
     "require": "./dist/monval.cjs.js",
     "default": "./dist/monval.cjs.js"
@@ -12,11 +13,13 @@
   "types": "types",
   "type": "module",
   "scripts": {
+    "setup": "exit 0",
     "precompile": "rm -rf build/*",
     "compile": "tsc -p tsconfig.json",
     "prebuild": "rm -rf dist/*",
     "build": "rollup --config rollup.config.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "docs": "exit 0"
   },
   "repository": {
     "type": "git",
@@ -30,8 +33,8 @@
   ],
   "author": "Murat Gözel <murat@gozel.com.tr>",
   "funding": {
-    "type": "ko-fi",
-    "url": "https://ko-fi.com/muratgozel"
+    "type": "patreon",
+    "url": "https://patreon.com/muratgozel"
   },
   "license": "MIT",
   "bugs": {
