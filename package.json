@@ -1,6 +1,6 @@
 {
   "name": "monval",
-  "version": "v2.4.12",
+  "version": "v2.4.13",
   "description": "Precise and simple money utility with exchange rates support.",
   "type": "module",
   "exports": {
@@ -67,7 +67,6 @@
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@babel/runtime-corejs3": "^7.15.4",
-    "@tsconfig/esm": "^1.0.2",
     "@tsconfig/node18": "^1.0.1",
     "@tsconfig/strictest": "^2.0.0"
   }
