@@ -66,3 +66,5 @@ declare module 'monval' {
 
     export const monval: Monval
 }
+
+export {}
